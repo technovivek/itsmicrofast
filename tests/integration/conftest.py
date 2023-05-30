@@ -1,0 +1,1 @@
+from tests.integration.fixtures.database import * #noqa
