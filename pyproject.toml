@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "itsmicrofast"
+version = "0.1.0"
+description = "technologies brought together"
+authors = ["VIVEK KUMAR <vivek14113@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"
+celery = "^5.2.7"
+fastapi = "^0.95.2"
+pytest = "^7.3.1"
+sqlmodel = "^0.0.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

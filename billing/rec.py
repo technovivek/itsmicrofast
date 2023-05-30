@@ -74,7 +74,7 @@ print(rec_power(3, 2))
 
 
 
-def check_power(num):
+def check_power(num, checking_num):
 
     tmp = num
 
@@ -83,14 +83,50 @@ def check_power(num):
         if tmp == 0 or tmp == 1:
             return (num,True)
 
-        quo = tmp //2
-        rem = tmp % 2
+        quo = tmp //checking_num
+        rem = tmp % checking_num
         if rem == 1:
             return (tmp,False)
         tmp = quo
     # check_power(quo)
 
 # print([check_power(i) for i in range(1,10)])
-print(check_power(65))
+print(check_power(65,2))
+print(check_power(81,3))
+print(check_power(27,3))
+print(check_power(9,3))
+print(check_power(16,4))
+print(check_power(20,4))
+
+# # ip = [1,2,3,4,6,7,10]
+# max = max(ip)
+# min = min(ip)
+# missing = []
+# for i in range(min, max):
+#     if i not in ip:
+#         missing.append(i)
+# print(missing)
+
+def num_list(list_to_check):
+    ma = max(list_to_check)
+    mi = min(list_to_check)
+    missing = []
+    for i in range(mi, ma):
+        if i not in list_to_check:
+            missing.append(i)
+    return  missing
+
+print(num_list([5,6,8,10,11,14,17]))
+
+
+
+
+
+
+
+
+
+
+
 
 

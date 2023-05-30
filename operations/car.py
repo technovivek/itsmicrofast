@@ -6,13 +6,11 @@ from fastapi import status
 from typing import List, Dict, Any
 
 from schemas.car import CreateCarResponse, CarResponseBase, ListCars
-
 from sqlmodel import select
 
 from models.car import Car
 # from db.database import db_session
 from db.database import sqlmodel_db_session
-from uuid import uuid4
 
 car_models = [
     "Camry",
@@ -61,7 +59,7 @@ car_makes = [
 ]
 import random
 price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range(20)]
-print("price_list", price_list)
+# print("price_list", price_list)
 
 
 #for one time. for filling up db auto
@@ -74,11 +72,7 @@ print("price_list", price_list)
 #         # print(f"{car1.make} added")
 #         return True
 
-def add_car_object(make, model, price) -> dict:
-
-
-
-
+def add_car_object(make: str, model: str, price: float) -> dict:
 
     id = uuid.uuid4()
     car = Car(make=make, model=model, price=price, id=id)
@@ -89,6 +83,7 @@ def add_car_object(make, model, price) -> dict:
             #perform a check
             stmt = select(Car).where(Car.model == model)
             res =  session.execute(stmt).fetchone()
+
             if res:
                 raise HTTPException(detail = "Model already present!" , status_code= status.HTTP_409_CONFLICT)
             else:
