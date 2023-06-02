@@ -75,6 +75,7 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range
 def add_car_object(make: str, model: str, price: float) -> dict:
 
     id = uuid.uuid4()
+    print("called----->", id)
     car = Car(make=make, model=model, price=price, id=id)
 
     try:
@@ -83,6 +84,7 @@ def add_car_object(make: str, model: str, price: float) -> dict:
             #perform a check
             stmt = select(Car).where(Car.model == model)
             res =  session.execute(stmt).fetchone()
+            print("res value", res)
 
             if res:
                 raise HTTPException(detail = "Model already present!" , status_code= status.HTTP_409_CONFLICT)

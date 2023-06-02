@@ -3,27 +3,34 @@ import pytest
 from operations.car import add_car_object, get_cars
 
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, call
+
 
 @patch('operations.car.uuid')
 @patch('operations.car.select')
 @patch('operations.car.sqlmodel_db_session')
-def test_add_car_object(sql_session, select_mock,  uuid_mock):
+def test_add_car_object(sql_session,select_mock, uuid_mock):
 
     make = "test_make"
     model = "test_model"
     price = 900000.12
 
-    select = Mock()
-    select.return_value.where.return_value = None
-    select_mock = select
+    # select = Mock()
+    # select.return_value.where.return_value = None
+    # select_mock = select
 
     uuid_ = Mock()
     uuid_.uuid4 = Mock(return_value= "1234")
     uuid_mock.return_value = uuid_
 
     car = Mock()
-    car.model = "Nano"
+    car.model = model
+    car.make = make
+    car.price = price
+
+    select_ = Mock()
+    select_.where.return_value = None
+    select_mock.return_value = select_
 
     with sql_session() as session:
 
@@ -32,6 +39,11 @@ def test_add_car_object(sql_session, select_mock,  uuid_mock):
         # session.return_value.__enter__.return_value.execute.return_value.fetchone.return_value = "okay"
         # session.return_value.__enter__.return_value.add.return_value = None
         assert add_car_object(make = make, model = model, price = price) == {"id": str(uuid_mock.uuid4())}
+        uuid_mock.uuid4.assert_called()
+        sql_session.assert_called()
+        session.execute.assert_called_once()
+        select_mock.where.assert_called()
+
 
 
 

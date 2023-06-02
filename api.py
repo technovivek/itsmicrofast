@@ -1,6 +1,6 @@
 # 1. async(will use Celery) 2. Annotated(done).  # Redis
 # Flower #Docker # K8s #Pipelines #testing always
-# JWT #poetry   #migration(alembic)
+# JWT #poetry   #migration(alembic) #validator
 
 from fastapi import FastAPI, status
 from starlette.responses import JSONResponse
