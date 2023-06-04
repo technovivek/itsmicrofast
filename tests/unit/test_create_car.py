@@ -1,6 +1,8 @@
 import pytest
 
 from operations.car import add_car_object, get_cars
+from fastapi.exceptions import HTTPException
+from models.car import Car
 
 
 from unittest.mock import Mock, patch, call
@@ -34,30 +36,37 @@ def test_add_car_object(sql_session,select_mock, uuid_mock):
 
     with sql_session() as session:
 
-        session.execute.return_value.fetchone = Mock(return_value=False)
-        session.add.return_value = session
+        session.execute.return_value.fetchone = Mock(side_effect=[False, True, True])
+        # session.add.return_value = session
+        session.add.side_effect = [session, Exception("raised from here"), HTTPException(status_code=500)]
         # session.return_value.__enter__.return_value.execute.return_value.fetchone.return_value = "okay"
         # session.return_value.__enter__.return_value.add.return_value = None
         assert add_car_object(make = make, model = model, price = price) == {"id": str(uuid_mock.uuid4())}
         uuid_mock.uuid4.assert_called()
-        sql_session.assert_called()
+        # sql_session.assert_called_once()
         session.execute.assert_called_once()
-        select_mock.where.assert_called()
+        with pytest.raises(Exception) as e:
+            add_car_object(make=make, model=model, price=price)
+        with pytest.raises(HTTPException):
+            add_car_object(make=make, model=model, price=price)
 
 
 
+# @pytest.mark.parametrize('ret_val,expected',[([1,2],'Full')])
+@patch('operations.car.select')
+@patch('operations.car.sqlmodel_db_session')
+def test_get_car(session_mock, select_mock, car_object):
 
-@pytest.mark.parametrize('ret_val,expected',[([1,2],'Full')])
-@patch('operations.create_car.db_session')
-def test_get_car(session_mock, ret_val, expected):
-    session = Mock()
+
 
     with session_mock() as session:
-        # session.return_value.__enter
-        session.query.return_value.all.return_value = ret_val
-        session_mock.return_value = session
+        session.execute.return_value.all.side_effect = [[[car_object]],[]]
+        assert len(get_cars()) > 0
+        assert [] == get_cars()
+        session.execute.assert_called()
+        select_mock.assert_called_with(Car)
 
-        assert expected in get_cars()
+
 
 
 

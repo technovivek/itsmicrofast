@@ -1,12 +1,13 @@
 # 1. async(will use Celery) 2. Annotated(done).  # Redis
 # Flower #Docker # K8s #Pipelines #testing always
-# JWT #poetry   #migration(alembic) #validator
+# JWT #poetry   #migration(alembic) #validator #Dependency management
+import uuid
 
 from fastapi import FastAPI, status
 from starlette.responses import JSONResponse
 from operations.book import get_book, add_book
 
-from operations.car import add_car_object, get_cars
+from operations.car import add_car_object, get_cars, delete_car_object
 from operations.person import add_person, get_persons
 from schemas.car import SchemaCar, ListCars, CreateCarResponse
 from schemas.person import CreatePersonResponse, ListPersons, PersonRequest
@@ -39,6 +40,10 @@ def list_cars():
 def add_person(input: PersonRequest):
     res = add_person(**input.__dict__)
     return res
+
+@app.delete("/car/{id}", tags=["Person"], status_code= status.HTTP_204_NO_CONTENT)
+def delete_car(id: uuid.UUID):
+    return delete_car_object(id)
 
 
 @app.get("/person", tags=["Person"], response_model=ListPersons)

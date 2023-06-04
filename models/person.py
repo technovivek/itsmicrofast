@@ -18,7 +18,7 @@ class Person(SQLModel, table = True):
      # date_of_birth = Column("dateofbirth", Date, nullable=False)
      # country_of_birth = Column("countryofbirth", String(length=50), nullable=False)
      # car_id = Column(BigInteger, ForeignKey("car.id"), unique=True)
-     id: uuid.UUID = Field(primary_key= True, nullable= False, default_factory= uuid.uuid4)
+     id: uuid.UUID = Field(primary_key= True, nullable= False)
      first_name: str = Field(sa_column=Column(type_ = String(length=50), nullable= False))
      last_name: str = Field(sa_column= Column(type_ = String(length=50), nullable=False))
      gender: str = Field(sa_column=Column(type_ = String(length=10), nullable=False))

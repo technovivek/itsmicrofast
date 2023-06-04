@@ -40,7 +40,7 @@ def create_db_engine():
 
     database_url = f"postgresql://{db_settings['user']}:{db_settings['password']}@{db_settings['host']}:" \
                    f"{db_settings['port']}/{db_settings['db']}"
-    print("database url----->", database_url)
+    # print("database url----->", database_url)
 
     engine = create_engine(database_url, )
     return engine
@@ -55,7 +55,7 @@ def create_db_engine_for_test():
 
     database_url = f"postgresql://{db_settings['user']}:{db_settings['password']}@{db_settings['host']}:" \
                    f"{db_settings['port']}/{db_settings['db']}"
-    print("database url----->", database_url)
+    # print("database url----->", database_url)
 
     engine = create_engine(database_url)
     return engine

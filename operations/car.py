@@ -6,11 +6,12 @@ from fastapi import status
 from typing import List, Dict, Any
 
 from schemas.car import CreateCarResponse, CarResponseBase, ListCars
-from sqlmodel import select
+from sqlmodel import select, delete
 
 from models.car import Car
 # from db.database import db_session
 from db.database import sqlmodel_db_session
+from sqlalchemy.exc import IntegrityError, DatabaseError
 
 car_models = [
     "Camry",
@@ -58,11 +59,14 @@ car_makes = [
     "Jaguar"
 ]
 import random
+
 price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range(20)]
+
+
 # print("price_list", price_list)
 
 
-#for one time. for filling up db auto
+# for one time. for filling up db auto
 # def create_car_object():
 #
 #     with sqlmodel_db_session() as session:
@@ -73,33 +77,22 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range
 #         return True
 
 def add_car_object(make: str, model: str, price: float) -> dict:
-
     id = uuid.uuid4()
-    print("called----->", id)
     car = Car(make=make, model=model, price=price, id=id)
 
     try:
 
         with sqlmodel_db_session() as session:
-            #perform a check
-            stmt = select(Car).where(Car.model == model)
-            res =  session.execute(stmt).fetchone()
-            print("res value", res)
+            session.add(car)
+            return {"id": str(id)}
+    except Exception as i:
 
-            if res:
-                raise HTTPException(detail = "Model already present!" , status_code= status.HTTP_409_CONFLICT)
-            else:
-                session.add(car)
-                return {"id": str(id)}
-    except Exception as e:
-
-        print("Failed to add to DB", str(e))
-        raise  e
-
+        print("Failed to add to DB", str(i))
+        raise
 
 
 def get_cars() -> list[dict] | list:
-    with sqlmodel_db_session()  as session:
+    with sqlmodel_db_session() as session:
         stmt = select(Car)
         res = session.execute(stmt)
         cars = res.all()
@@ -107,9 +100,21 @@ def get_cars() -> list[dict] | list:
             return []
         else:
 
-            return [{"id": f'{str(c[0].id)}', "make":c[0].make, "model": c[0].model } for c in cars]
+            return [{"id": f'{str(c[0].id)}', "make": c[0].make, "model": c[0].model} for c in cars]
 
-#when using sqlalchemy
+
+def delete_car_object(id: uuid.UUID) -> HTTPException | None:
+    try:
+        with sqlmodel_db_session() as session:
+            if not session.execute(select(Car).where(Car.id == id)):
+                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+            stmt = delete(Car).where(Car.id == id)
+            session.execute(stmt)
+    except Exception as d:
+        print("deletion not performed", str(d))
+        raise
+
+# when using sqlalchemy
 # def get_car():
 #
 #     with sqlmodel_db_session() as session:

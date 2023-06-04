@@ -25,6 +25,7 @@ class PersonRequest(Base):
     date_of_birth: Annotated[datetime,Body()]
     country_of_birth: Annotated[str,Body()]
     car_id: Annotated[uuid.UUID,Body()] = None
+    id: Annotated[uuid.UUID, Body()]
 
 
 class CreatePersonResponse(Base):
