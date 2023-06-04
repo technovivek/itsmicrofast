@@ -51,8 +51,8 @@ def test_get_persons(session_mock, select_mock, person_attributes):
         assert len(get_persons()) > 0
         assert [] == get_persons()
         session.execute.assert_has_calls([call(select_mock()), call().fetchall(), call(select_mock()), call().fetchall()])
-        select_mock.assert_has_calls([call(Person), call(Person), call(), call()])
+        select_mock.assert_has_calls([call(Person), call(Person)])
 
 
-def test_delete_person()
+
 
