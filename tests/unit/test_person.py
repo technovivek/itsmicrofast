@@ -54,5 +54,5 @@ def test_get_persons(session_mock, select_mock, person_attributes):
         select_mock.assert_has_calls([call(Person), call(Person), call(), call()])
 
 
-def test_delete_person()
+
 

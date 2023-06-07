@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
+from sqlmodel import SQLModel
 
 
 def create_test_db_conn():
@@ -21,7 +22,7 @@ def create_test_db_conn():
     return engine
 
 @contextlib.contextmanager
-def session_for_test():
+def sqlmodel_db_session_for_test():
     session = None
     engine = create_test_db_conn()
     try:
@@ -32,12 +33,13 @@ def session_for_test():
     except Exception as e:
         session.rollback()
         print("Exception occured", str(e))
+        raise e
     finally:
-        Base = declarative_base()
-        Base.metadata.create_all(bind=engine)
-        print("session rolled backed!!!")
+        SQLModel.metadata.create_all(bind= engine)
+        session.commit()
         session.close()
 
 @pytest.fixture
 def session():
-    yield session_for_test
+    with sqlmodel_db_session_for_test() as session:
+        yield session
