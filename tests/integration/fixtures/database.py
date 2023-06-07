@@ -28,16 +28,18 @@ def sqlmodel_db_session_for_test():
     try:
         session = Session(bind=engine)
         yield session
-
-
     except Exception as e:
         session.rollback()
         print("Exception occured", str(e))
         raise e
     finally:
-        SQLModel.metadata.create_all(bind= engine)
-        session.commit()
+        # SQLModel.metadata.create_all(bind= engine)
+        # session.commit()
+        # SQLModel.metadata.drop_all(bind=engine)
         session.close()
+
+
+
 
 @pytest.fixture
 def session():
