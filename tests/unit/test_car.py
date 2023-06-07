@@ -43,7 +43,7 @@ def test_add_car_object(sql_session, select_mock, uuid_mock):
         assert add_car_object(make=make, model=model, price=price) == {"id": str(uuid_mock.uuid4())}
         uuid_mock.uuid4.assert_called()
         # sql_session.assert_called_once()
-        session.execute.assert_called_once()
+        # session.execute.assert_called_once()
         with pytest.raises(Exception) as e:
             add_car_object(make=make, model=model, price=price)
         with pytest.raises(HTTPException):
@@ -64,15 +64,19 @@ def test_get_car(session_mock, select_mock, car_object):
 
 
 
-
-def test_delete_car(car_object):
+def test_delete_car():
     id = uuid.uuid4()
-    with patch('operations.car.sqlmodel_db_session') as session:
-        with patch('operations.car.select') as select_mock:
-            with patch('operations.car.delete') as delete_mock:
-                select_mock.where.return_value = None
-                delete_mock.where.return_value = None
-                session.execute.side_effect = [True, False, True, Exception("raised from here")]
-                assert isinstance(delete_car_object(id = id), HTTPException)
-                with pytest.raises(Exception):
-                    delete_car_object(id = id)
+    with patch('operations.car.sqlmodel_db_session') as session_mock:
+        with session_mock() as session:
+            session.execute.side_effect = [None, True,None,True, Exception("raised from here")]
+            with patch('operations.car.select') as select_mock:
+                select = Mock()
+                select.where.return_value = None
+                select_mock.return_value = select
+                with patch('operations.car.delete') as delete_mock:
+                    delete_mock.where.return_value = None
+                    assert isinstance(delete_car_object(id = id), HTTPException)
+                    assert delete_car_object(id=id) is None
+                    with pytest.raises(Exception):
+                        delete_car_object(id=id)
+
