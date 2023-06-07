@@ -84,7 +84,7 @@ def add_car_object(make: str, model: str, price: float) -> dict:
 
         with sqlmodel_db_session() as session:
             session.add(car)
-            return {"id": str(id)}
+        return {"id": str(id)}
     except Exception as i:
 
         print("Failed to add to DB", str(i))
