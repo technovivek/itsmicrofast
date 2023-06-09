@@ -59,3 +59,8 @@ def sqlmodel_db_session():
         SQLModel.metadata.create_all(bind=engine)
         session.commit()
         session.close()
+
+
+def get_session():
+    with sqlmodel_db_session() as session:
+        yield session

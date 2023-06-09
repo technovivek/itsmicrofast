@@ -12,6 +12,7 @@ from models.car import Car
 # from db.database import db_session
 from db.database import sqlmodel_db_session
 from sqlalchemy.exc import IntegrityError, DatabaseError
+from sqlalchemy.orm import Session
 
 car_models = [
     "Camry",
@@ -76,40 +77,57 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range
 #         # print(f"{car1.make} added")
 #         return True
 
-def add_car_object(make: str, model: str, price: float) -> dict:
+# V1
+# def add_car_object(make: str, model: str, price: float) -> dict:
+#     id = uuid.uuid4()
+#     car = Car(make=make, model=model, price=price, id=id)
+#
+#     try:
+#
+#         with sqlmodel_db_session() as session:
+#             session.add(car)
+#         return {"id": str(id)}
+#     except Exception as i:
+#
+#         print("Failed to add to DB", str(i))
+#         raise
+# v2
+
+def add_car_object(db: Session, make: str, model: str, price: float) -> dict:
     id = uuid.uuid4()
     car = Car(make=make, model=model, price=price, id=id)
+    # car = Car.from_orm()
 
     try:
 
-        with sqlmodel_db_session() as session:
-            session.add(car)
+        db.add(car)
         return {"id": str(id)}
+
     except Exception as i:
 
         print("Failed to add to DB", str(i))
         raise
 
 
-def get_cars() -> list[dict] | list:
-    with sqlmodel_db_session() as session:
-        stmt = select(Car)
-        res = session.execute(stmt)
-        cars = res.all()
-        if not res:
-            return []
-        else:
+def get_cars(session: Session) -> list[dict] | list:
+    stmt = select(Car)
+    res = session.execute(stmt)
+    cars = res.all()
+    if not res:
+        return []
+    else:
 
-            return [{"id": f'{str(c[0].id)}', "make": c[0].make, "model": c[0].model} for c in cars]
+        return [{"id": f'{str(c[0].id)}', "make": c[0].make, "model": c[0].model} for c in cars]
 
 
-def delete_car_object(id: uuid.UUID) -> HTTPException | None:
+def delete_car_object(session: Session, id: uuid.UUID) -> HTTPException | None:
     try:
-        with sqlmodel_db_session() as session:
-            if not session.execute(select(Car).where(Car.id == id)):
-                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
-            stmt = delete(Car).where(Car.id == id)
-            session.execute(stmt)
+
+        if not session.execute(select(Car).where(Car.id == id)):
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+        stmt = delete(Car).where(Car.id == id)
+        session.execute(stmt)
+
     except Exception as d:
         print("deletion not performed", str(d))
         raise

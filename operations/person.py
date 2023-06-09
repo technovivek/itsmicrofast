@@ -3,7 +3,7 @@ import random
 from db.database import sqlmodel_db_session
 from models.person import Person
 import uuid
-from sqlmodel import select
+from sqlmodel import select, Session
 from sqlalchemy.exc import IntegrityError
 
 first_names = [
@@ -115,15 +115,15 @@ def add_person(first_name, last_name, gender, email, date_of_birth, country_of_b
         raise
 
 
-def get_persons():
-    with sqlmodel_db_session() as session:
-        stmt = select(Person)
-        res = session.execute(stmt)
-        persons = res.fetchall()
-        if not persons:
-            return []
+def get_persons(session: Session):
 
-        return [{"name": f'{r[0].first_name + "  " + r[0].last_name}', "id": str(r[0].id), "email": r[0].email} for r in
-                persons]
+    stmt = select(Person)
+    res = session.execute(stmt)
+    persons = res.fetchall()
+    if not persons:
+        return []
+
+    return [{"name": f'{r[0].first_name + "  " + r[0].last_name}', "id": str(r[0].id), "email": r[0].email} for r in
+            persons]
 
 # print(get_persons())
