@@ -21,6 +21,7 @@ class SchemaCar(Base):
         str, Body(min_length=3, max_length=50)] = ...  # just to keep in mind that this is how Annotation works
     model: Annotated[str, Body(min_length=3, max_length=50)] = ...
     price: Annotated[float, Body(example=8989889)]
+    sunroof: Annotated[bool, Body(example=False)] = any([False,True])
 
     # id: uuid.UUID| None = Body(default=uuid.uuid4())
     class Config:
@@ -29,6 +30,7 @@ class SchemaCar(Base):
                 "make": "Foo",
                 "model": "Baar",
                 "price": 6585785,
+                "sunroof": True
 
             }
         }

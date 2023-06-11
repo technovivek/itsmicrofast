@@ -1,6 +1,4 @@
 from datetime import datetime
-
-from db.database import Base
 # from sqlalchemy import Column, BigInteger, String, ForeignKey, Date
 from sqlmodel import Column, String, Date, ForeignKey, Field, SQLModel
 import uuid

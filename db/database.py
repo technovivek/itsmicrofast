@@ -3,8 +3,7 @@ from dataclasses import dataclass
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlmodel import create_engine, Session, SQLModel
 
 
@@ -53,7 +52,7 @@ def sqlmodel_db_session():
 
     except Exception as e:
         session.rollback()
-        print("Exception occurred", str(e))
+        print("Exception occurred---->", str(e))
         raise e
     finally:
         SQLModel.metadata.create_all(bind=engine)

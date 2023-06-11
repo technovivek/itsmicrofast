@@ -103,10 +103,11 @@ def add_car_object(db: Session, make: str, model: str, price: float) -> dict:
         db.add(car)
         return {"id": str(id)}
 
-    except Exception as i:
 
-        print("Failed to add to DB", str(i))
-        raise
+    except Exception as e:
+
+        print("Failed to add to DB", str(e))
+        raise e
 
 
 def get_cars(session: Session) -> list[dict] | list:
