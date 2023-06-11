@@ -6,13 +6,12 @@ from fastapi import status
 from typing import List, Dict, Any
 
 from schemas.car import CreateCarResponse, CarResponseBase, ListCars
-from sqlmodel import select, delete
+from sqlmodel import select, delete, Session
 
 from models.car import Car
 # from db.database import db_session
 from db.database import sqlmodel_db_session
 from sqlalchemy.exc import IntegrityError, DatabaseError
-from sqlalchemy.orm import Session
 
 car_models = [
     "Camry",
@@ -98,16 +97,8 @@ def add_car_object(db: Session, make: str, model: str, price: float) -> dict:
     car = Car(make=make, model=model, price=price, id=id)
     # car = Car.from_orm()
 
-    try:
-
-        db.add(car)
-        return {"id": str(id)}
-
-
-    except Exception as e:
-
-        print("Failed to add to DB", str(e))
-        raise e
+    db.add(car)
+    return {"id": str(id)}
 
 
 def get_cars(session: Session) -> list[dict] | list:

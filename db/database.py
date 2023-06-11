@@ -2,9 +2,13 @@ import contextlib
 from dataclasses import dataclass
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import Session
+from typing import Generator
+
+from sqlalchemy import exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlmodel import create_engine, Session, SQLModel
+from psycopg2.errors import UniqueViolation
 
 
 # This wouldn't work! 🚨
@@ -47,19 +51,21 @@ def sqlmodel_db_session():
     session = None
     engine = create_db_engine()
     try:
-        session = Session(bind=engine, expire_on_commit= False)
+        session = Session(bind=engine, expire_on_commit=False)
         yield session
 
-    except Exception as e:
-        session.rollback()
-        print("Exception occurred---->", str(e))
-        raise e
+
     finally:
         SQLModel.metadata.create_all(bind=engine)
         session.commit()
         session.close()
 
 
-def get_session():
-    with sqlmodel_db_session() as session:
-        yield session
+def get_session() -> Generator:
+    try:
+        with sqlmodel_db_session() as session:
+            yield session
+
+    except  SQLAlchemyError as e:
+        print("Error--->", e)
+        raise e
