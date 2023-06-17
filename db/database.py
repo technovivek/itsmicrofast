@@ -1,9 +1,9 @@
 import contextlib
 from dataclasses import dataclass
+from errors.database import DatabaseError,AlreayExistsInDBError
+# from sqlalchemy.exc import SQLAlchemyError
 
 from typing import Generator
-
-from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import create_engine, Session, SQLModel
 
 
@@ -67,5 +67,10 @@ def get_session() -> Generator[Session, None, None]:
         with sqlmodel_db_session() as session:
             yield session
 
-    except SQLAlchemyError as e:
-        raise e
+    except AlreayExistsInDBError as a:
+        print("++++++++++++++>>>>>>>",a)
+        raise DatabaseError(a) from a
+
+    # except SQLAlchemyError as d:
+    #     print("coing hrtr----->",d)
+    #     raise DatabaseError(d) from d

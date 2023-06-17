@@ -2,6 +2,7 @@ import uuid
 import random
 from fastapi.exceptions import HTTPException
 from fastapi import status
+from errors.database import AlreayExistsInDBError
 
 from sqlmodel import select, delete, Session
 
@@ -91,6 +92,9 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for
 
 def add_car_object(db: Session, make: str, model: str,
                    price: float) -> dict:
+
+    if db.query(Car).where(Car.model == model):
+        raise AlreayExistsInDBError(f"{model} already exists")
     id = uuid.uuid4()  # noqa A003
     car = Car(make=make, model=model, price=price, id=id)
     # car = Car.from_orm()
