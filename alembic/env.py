@@ -5,7 +5,7 @@ from sqlalchemy import pool
 from sqlmodel import SQLModel
 
 from alembic import context
-from models import *
+# from models import Car, Book, Person
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -64,11 +64,10 @@ def run_migrations_online() -> None:
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    #https://stackoverflow.com/questions/12409724/no-changes-detected-in-alembic-autogeneration-of-migrations-with-flask-sqlalchem
+    # https://stackoverflow.com/questions/12409724/no-changes-detected-in-alembic-autogeneration-of-migrations-with-flask-sqlalchem
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

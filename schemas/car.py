@@ -1,8 +1,6 @@
 from sqlmodel import SQLModel
 from fastapi import Body
-import uuid
 from typing import List
-from pydantic.generics import GenericModel
 from typing import Annotated
 
 
@@ -11,17 +9,19 @@ class Base(SQLModel):
 
 
 class CarResponseBase(SQLModel):
-    id: str
+    id: str  # noqa A003
 
 
 class SchemaCar(Base):
     # make: str = Body(min_length= 3, max_length= 50)
-    # just to show the usage of Annotated. Annotated is just a newer expression of hinting in pydantic
+    # just to show the usage of Annotated. Annotated is
+    # just a newer expression of hinting in pydantic
     make: Annotated[
-        str, Body(min_length=3, max_length=50)] = ...  # just to keep in mind that this is how Annotation works
+        str, Body(min_length=3, max_length=50)
+    ] = ...  # just to keep in mind that this is how Annotation works
     model: Annotated[str, Body(min_length=3, max_length=50)] = ...
     price: Annotated[float, Body(example=8989889)]
-    sunroof: Annotated[bool, Body(example=False)] = any([False,True])
+    sunroof: Annotated[bool, Body(example=False)] = any([False, True])
 
     # id: uuid.UUID| None = Body(default=uuid.uuid4())
     class Config:
@@ -30,8 +30,7 @@ class SchemaCar(Base):
                 "make": "Foo",
                 "model": "Baar",
                 "price": 6585785,
-                "sunroof": True
-
+                "sunroof": True,
             }
         }
 

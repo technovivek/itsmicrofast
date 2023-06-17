@@ -6,12 +6,12 @@ from operations.car import add_car_object, get_cars, delete_car_object
 from fastapi.exceptions import HTTPException
 from models.car import Car
 
-from unittest.mock import Mock, patch, call
+from unittest.mock import Mock, patch
 
 
-@patch('operations.car.uuid')
-@patch('operations.car.select')
-@patch('operations.car.sqlmodel_db_session')
+@patch("operations.car.uuid")
+@patch("operations.car.select")
+@patch("operations.car.sqlmodel_db_session")
 def test_add_car_object(sql_session, select_mock, uuid_mock):
     make = "test_make"
     model = "test_model"
@@ -37,46 +37,64 @@ def test_add_car_object(sql_session, select_mock, uuid_mock):
     with sql_session() as session:
         session.execute.return_value.fetchone = Mock(side_effect=[False, True, True])
         # session.add.return_value = session
-        session.add.side_effect = [session, Exception("raised from here"), HTTPException(status_code=500)]
-        # session.return_value.__enter__.return_value.execute.return_value.fetchone.return_value = "okay"
-        # session.return_value.__enter__.return_value.add.return_value = None
-        assert add_car_object(make=make, model=model, price=price) == {"id": str(uuid_mock.uuid4())}
+        session.add.side_effect = [
+            session,
+            Exception("raised from here"),
+            HTTPException(status_code=500),
+        ]
+        # session.return_value.__enter__.return_value.execute.
+        # return_value.
+        # fetchone.return_value = "okay"
+        # session.return_value.__enter__.return_value.add.return_value
+        # = None
+        assert add_car_object(make=make, model=model, price=price,
+                              db=session) == {
+            "id": str(uuid_mock.uuid4())
+        }
         uuid_mock.uuid4.assert_called()
         # sql_session.assert_called_once()
         # session.execute.assert_called_once()
-        with pytest.raises(Exception) as e:
-            add_car_object(make=make, model=model, price=price)
+        with pytest.raises(Exception):
+            add_car_object(make=make, model=model, price=price,
+                           db=session)
         with pytest.raises(HTTPException):
-            add_car_object(make=make, model=model, price=price)
+            add_car_object(make=make, model=model, price=price,
+                           db=session)
 
 
 # @pytest.mark.parametrize('ret_val,expected',[([1,2],'Full')])
-@patch('operations.car.select')
-@patch('operations.car.sqlmodel_db_session')
+@patch("operations.car.select")
+@patch("operations.car.sqlmodel_db_session")
 def test_get_car(session_mock, select_mock, car_object):
     with session_mock() as session:
         session.execute.return_value.all.side_effect = [[[car_object]], []]
-        assert len(get_cars()) > 0
-        assert [] == get_cars()
+        assert len(get_cars(session=session)) > 0
+        assert [] == get_cars(session=session)
         session.execute.assert_called()
         select_mock.assert_called_with(Car)
 
 
-
-
 def test_delete_car():
-    id = uuid.uuid4()
-    with patch('operations.car.sqlmodel_db_session') as session_mock:
+    id_ = uuid.uuid4()
+    with patch("operations.car.sqlmodel_db_session") as session_mock:
         with session_mock() as session:
-            session.execute.side_effect = [None, True,None,True, Exception("raised from here")]
-            with patch('operations.car.select') as select_mock:
+            session.execute.side_effect = [
+                None,
+                True,
+                None,
+                True,
+                Exception("raised from here"),
+            ]
+            with patch("operations.car.select") as select_mock:
                 select = Mock()
                 select.where.return_value = None
                 select_mock.return_value = select
-                with patch('operations.car.delete') as delete_mock:
+                with patch("operations.car.delete") as delete_mock:
                     delete_mock.where.return_value = None
-                    assert isinstance(delete_car_object(id = id), HTTPException)
-                    assert delete_car_object(id=id) is None
+                    assert isinstance(delete_car_object(id=id_,
+                                                    session=session),
+                                      HTTPException)
+                    assert delete_car_object(id=id_, session= session)\
+                           is None
                     with pytest.raises(Exception):
-                        delete_car_object(id=id)
-
+                        delete_car_object(id=id_, session=session)

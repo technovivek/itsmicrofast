@@ -16,8 +16,13 @@ uvicorn = {extras = ["standard"], version = "^0.22.0"}
 psycopg2 = "^2.9.6"
 pre-commit = "^3.3.2"
 alembic = "^1.11.1"
+ruff = "^0.0.272"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = [".venv","billing",".pytest_cache"]
+

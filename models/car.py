@@ -19,16 +19,27 @@ import uuid
 #           self.price = price
 #
 #      def __repr__(self):
-#           return f"Car {self.make}  model {self.model} id {self.id} price {self.price}"
+#           return f"Car {self.make}  model {self.model}
+#           id {self.id} price {self.price}"
+
 
 class Car(SQLModel, table=True):
     # https://github.com/tiangolo/sqlmodel/issues/140
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, nullable=False)
-    make: str = Field(sa_column=Column(name="make", type_=String(length=50), nullable=False))
-    model: str = Field(sa_column=Column(name="model", type_=String(length=50), nullable=False, unique=True), index=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, # noqa A003
+                          primary_key=True, nullable=False)
+    make: str = Field(
+        sa_column=Column(name="make", type_=String(length=50),
+                         nullable=False)
+    )
+    model: str = Field(
+        sa_column=Column(
+            name="model", type_=String(length=50), nullable=False, unique=True
+        ),
+        index=True,
+    )
     price: int = Field(sa_column=Column(name="price", type_=Numeric))
-    sunroof: bool = Field(sa_column= Column(name="is_sunroof", type_=Boolean))
+    sunroof: bool = Field(sa_column=Column(name="is_sunroof", type_=Boolean))
 
     # def __repr__(self):
     #      return f"Car {Car.make}  model {Car.model} id {Car.id} price {Car.price}"
