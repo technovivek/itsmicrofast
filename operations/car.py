@@ -1,17 +1,11 @@
 import uuid
-from time import sleep
-
+import random
 from fastapi.exceptions import HTTPException
 from fastapi import status
-from typing import List, Dict, Any
 
-from schemas.car import CreateCarResponse, CarResponseBase, ListCars
-from sqlmodel import select, delete
+from sqlmodel import select, delete, Session
 
 from models.car import Car
-# from db.database import db_session
-from db.database import sqlmodel_db_session
-from sqlalchemy.exc import IntegrityError, DatabaseError
 
 car_models = [
     "Camry",
@@ -33,7 +27,7 @@ car_models = [
     "Sportage",
     "Sierra",
     "Escalade",
-    "Chrysler 300"
+    "Chrysler 300",
 ]
 
 car_makes = [
@@ -56,11 +50,12 @@ car_makes = [
     "Chrysler",
     "Tesla",
     "Land Rover",
-    "Jaguar"
+    "Jaguar",
 ]
-import random
 
-price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range(20)]
+
+price_list = [random.choice([r for r in range(1000000, 9999999)]) for
+              r in range(20)]
 
 
 # print("price_list", price_list)
@@ -71,45 +66,66 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for r in range
 #
 #     with sqlmodel_db_session() as session:
 #         for i in range(20):
-#             car = Car(make = car_makes[i], model = car_models[i], price = price_list[i], id = uuid4())
+#             car = Car(make = car_makes[i], model = car_models[i],
+#             price = price_list[i], id = uuid4())
 #             session.add(car)
 #         # print(f"{car1.make} added")
 #         return True
 
-def add_car_object(make: str, model: str, price: float) -> dict:
-    id = uuid.uuid4()
+# V1
+# def add_car_object(make: str, model: str, price: float) -> dict:
+#     id = uuid.uuid4()
+#     car = Car(make=make, model=model, price=price, id=id)
+#
+#     try:
+#
+#         with sqlmodel_db_session() as session:
+#             session.add(car)
+#         return {"id": str(id)}
+#     except Exception as i:
+#
+#         print("Failed to add to DB", str(i))
+#         raise
+# v2
+
+
+def add_car_object(db: Session, make: str, model: str,
+                   price: float) -> dict:
+    id = uuid.uuid4()  # noqa A003
     car = Car(make=make, model=model, price=price, id=id)
+    # car = Car.from_orm()
 
+    db.add(car)
+    return {"id": str(id)}
+
+
+def get_cars(session: Session) -> list[dict] | list:
+    stmt = select(Car)
+    res = session.execute(stmt)
+    cars = res.all()
+    if not res:
+        return []
+    else:
+
+        return [
+            {"id": f"{str(c[0].id)}", "make": c[0].make,
+             "model": c[0].model}
+            for c in cars
+        ]
+
+
+def delete_car_object(session: Session,
+                      id: uuid.UUID) -> HTTPException | None: # noqa A003
     try:
 
-        with sqlmodel_db_session() as session:
-            session.add(car)
-            return {"id": str(id)}
-    except Exception as i:
+        if not session.execute(select(Car).where(Car.id == id)):
+            return HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not found"
+            )
+        stmt = delete(Car).where(Car.id == id)
+        session.execute(stmt)
 
-        print("Failed to add to DB", str(i))
-        raise
-
-
-def get_cars() -> list[dict] | list:
-    with sqlmodel_db_session() as session:
-        stmt = select(Car)
-        res = session.execute(stmt)
-        cars = res.all()
-        if not res:
-            return []
-        else:
-
-            return [{"id": f'{str(c[0].id)}', "make": c[0].make, "model": c[0].model} for c in cars]
-
-
-def delete_car_object(id: uuid.UUID) -> HTTPException | None:
-    try:
-        with sqlmodel_db_session() as session:
-            if not session.execute(select(Car).where(Car.id == id)):
-                return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
-            stmt = delete(Car).where(Car.id == id)
-            session.execute(stmt)
     except Exception as d:
         print("deletion not performed", str(d))
         raise
