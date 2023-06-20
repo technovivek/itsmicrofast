@@ -1,8 +1,8 @@
-
 from db.database import sqlmodel_db_session
 from models.person import Person
 import uuid
 from sqlmodel import select, Session
+
 # from sqlalchemy.exc import IntegrityError
 
 first_names = [
@@ -109,39 +109,24 @@ countries = [
 
 
 def add_person(
-    first_name, last_name, gender, email, date_of_birth,
+        first_name, last_name, gender, email, date_of_birth,
         country_of_birth, car_id
 ) -> dict:
-    try:
+    id_ = uuid.uuid4()
 
-        id_ = uuid.uuid4()
-
-        with sqlmodel_db_session() as session:
-            # for i in range(20):
-            #     person = Person(id = uuid_list[i], first_name =
-            #     first_names[i],
-            #                     last_name = last_names[i],
-            #                     country_of_birth = countries[i],
-            #                     gender = gender_list[i], email =
-            #                     email_list[i], date_of_birth =
-            #                     date_of_birth_list[i])
-            #
-            #     session.add(person)
-            person = Person(
-                first_name=first_name,
-                last_name=last_name,
-                gender=gender,
-                email=email,
-                date_of_birth=date_of_birth,
-                country_of_birth=country_of_birth,
-                car_id=car_id,
-                id=id_,
-            )
-            session.add(person)
-            return {"id": id_}
-    except Exception as i:
-        print("Failed to add to DB", i)
-        raise
+    with sqlmodel_db_session() as session:
+        person = Person(
+            first_name=first_name,
+            last_name=last_name,
+            gender=gender,
+            email=email,
+            date_of_birth=date_of_birth,
+            country_of_birth=country_of_birth,
+            car_id=car_id,
+            id=id_,
+        )
+        session.add(person)
+        return {"id": id_}
 
 
 def get_persons(session: Session):
@@ -162,4 +147,3 @@ def get_persons(session: Session):
     ]
 
 
-# print(get_persons())

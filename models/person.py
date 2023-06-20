@@ -24,5 +24,3 @@ class Person(SQLModel, table=True):
     country_of_birth: str = Field(sa_column=Column(nullable=False, type_=String(50)))
     car_id: uuid.UUID = Field(sa_column=Column(ForeignKey("car.id"), unique=True))
 
-    # def __repr__(self):
-    #      return f"Person created with id : {Person.id}"

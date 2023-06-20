@@ -1,8 +1,6 @@
 import uuid
 import random
-from fastapi.exceptions import HTTPException
-from fastapi import status
-from errors.database import AlreayExistsInDBError
+from errors.database import AlreadyExistsInDBError
 
 from sqlmodel import select, delete, Session
 
@@ -54,7 +52,6 @@ car_makes = [
     "Jaguar",
 ]
 
-
 price_list = [random.choice([r for r in range(1000000, 9999999)]) for
               r in range(20)]
 
@@ -92,15 +89,21 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for
 
 def add_car_object(db: Session, make: str, model: str,
                    price: float) -> dict:
+    try:
+        # r = 1 / 0
+        res = db.execute(select(Car).where(Car.model == model))
+        print("Recess", [r for r in res])
 
-    if db.query(Car).where(Car.model == model):
-        raise AlreayExistsInDBError(f"{model} already exists")
-    id = uuid.uuid4()  # noqa A003
-    car = Car(make=make, model=model, price=price, id=id)
-    # car = Car.from_orm()
+        if res:
+            raise AlreadyExistsInDBError(f"{model} already exists")
+        id = uuid.uuid4()  # noqa A003
+        car = Car(make=make, model=model, price=price, id=id)
 
-    db.add(car)
-    return {"id": str(id)}
+        db.add(car)
+        return {"id": str(id)}
+    except AlreadyExistsInDBError as e:
+        print("Operational error occurred", str(e))
+        raise
 
 
 def get_cars(session: Session) -> list[dict] | list:
@@ -119,20 +122,22 @@ def get_cars(session: Session) -> list[dict] | list:
 
 
 def delete_car_object(session: Session,
-                      id: uuid.UUID) -> HTTPException | None: # noqa A003
-    try:
+                      id: uuid.UUID) -> None | list:  # noqa A003
 
-        if not session.execute(select(Car).where(Car.id == id)):
-            return HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Not found"
-            )
-        stmt = delete(Car).where(Car.id == id)
-        session.execute(stmt)
+    cars = [r for r in
+            session.execute(select(Car).where(Car.id == id))]
 
-    except Exception as d:
-        print("deletion not performed", str(d))
-        raise
+    if len(cars) == 0:
+        return []
+
+    stmt = delete(Car).where(Car.id == id)
+    session.execute(stmt)
+
+
+def get_a_car(car_id: uuid.UUID, db: Session):
+    car = db.query(Car).where(Car.id == car_id).one()
+    print("----", car)
+    return {"id": str(car_id), "make": "make", "model": "model"}
 
 # when using sqlalchemy
 # def get_car():

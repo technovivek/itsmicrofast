@@ -1,6 +1,6 @@
 import contextlib
 from dataclasses import dataclass
-from errors.database import DatabaseError,AlreayExistsInDBError
+
 # from sqlalchemy.exc import SQLAlchemyError
 
 from typing import Generator
@@ -63,14 +63,7 @@ def sqlmodel_db_session():
 
 # Generator[YieldType, SendType, ReturnType]
 def get_session() -> Generator[Session, None, None]:
-    try:
-        with sqlmodel_db_session() as session:
-            yield session
 
-    except AlreayExistsInDBError as a:
-        print("++++++++++++++>>>>>>>",a)
-        raise DatabaseError(a) from a
+    with sqlmodel_db_session() as session:
+        yield session
 
-    # except SQLAlchemyError as d:
-    #     print("coing hrtr----->",d)
-    #     raise DatabaseError(d) from d

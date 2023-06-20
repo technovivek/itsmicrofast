@@ -39,6 +39,10 @@ class CreateCarResponse(CarResponseBase):
     pass
 
 
-class ListCars(List[CarResponseBase]):
+class GetCar(CarResponseBase):
     make: str
     model: str
+
+
+class ListCars(List[GetCar]):
+    pass
