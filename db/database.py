@@ -19,23 +19,24 @@ from sqlmodel import create_engine, Session, SQLModel
 # so SQLModel.metadata is still empty.
 
 
-@dataclass
-class DatabaseSettings:
-    user: str
-    password: str
-    host: str
-    port: int
-    db: str
+# @dataclass
+# class DatabaseSettings:
+#     user: str
+#     password: str
+#     host: str
+#     port: int
+#     db: str
 
-
-def create_db_engine():
-    db_settings = {
+db_settings = {
         "user": "postgres",
         "password": "admin",
         "host": "localhost",
         "port": "5432",
         "db": "dev02",
     }
+
+def create_db_engine(db_settings):
+
 
     database_url = (
         f"postgresql://{db_settings['user']}:{db_settings['password']}@{db_settings['host']}:"
@@ -50,7 +51,7 @@ def create_db_engine():
 @contextlib.contextmanager
 def sqlmodel_db_session():
     session = None
-    engine = create_db_engine()
+    engine = create_db_engine(db_settings)
     try:
         session = Session(bind=engine, expire_on_commit=False)
         yield session

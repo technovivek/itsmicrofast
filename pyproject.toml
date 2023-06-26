@@ -16,6 +16,7 @@ psycopg2 = "^2.9.6"
 alembic = "^1.11.1"
 
 # poetry add pre-commit   --group dev
+httpx = "^0.24.1"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.272"
 pytest = "^7.3.2"
