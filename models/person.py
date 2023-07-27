@@ -19,7 +19,7 @@ class Person(SQLModel, table=True):
     first_name: str = Field(sa_column=Column(type_=String(length=50), nullable=False))
     last_name: str = Field(sa_column=Column(type_=String(length=50), nullable=False))
     gender: str = Field(sa_column=Column(type_=String(length=10), nullable=False))
-    email: str = Field(sa_column=Column(type_=String(length=60)))
+    email: str = Field(sa_column=Column(type_=String(length=60), unique= True))
     date_of_birth: datetime = Field(sa_column=Column(type_=Date))
     country_of_birth: str = Field(sa_column=Column(nullable=False, type_=String(50)))
     car_id: uuid.UUID = Field(sa_column=Column(ForeignKey("car.id"), unique=True))

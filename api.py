@@ -19,6 +19,8 @@ from db.database import get_session
 from sqlalchemy.orm import Session
 from enum import Enum
 
+
+
 app = FastAPI(debug=True, title="Simple App")
 
 
@@ -41,10 +43,10 @@ def root():
 )
 def create_car(car: SchemaCar,
                session: Session = Depends(get_session)):
-    print("-------", car.dict())
+
 
     res = add_car_object(session, make=car.make, model=car.model,
-                         price=car.price)
+                         price=car.price, sunroof= car.sunroof)
     if not res:
         return JSONResponse(
             content="Failed!!",
@@ -72,7 +74,7 @@ def get_single_car(car_id: uuid.UUID,
     status_code=status.HTTP_201_CREATED,
     response_model=CreatePersonResponse,
 )
-def add_person(input_: PersonRequest,
+def add_person_object(input_: PersonRequest,
                session: Session = Depends(get_session)):
     res = add_person(session, **input_.__dict__)
     return res

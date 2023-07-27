@@ -108,40 +108,42 @@ countries = [
 # email_list, first_names, last_names]
 
 
-def add_person(
+def add_person(session,
         first_name, last_name, gender, email, date_of_birth,
         country_of_birth, car_id
 ) -> dict:
     id_ = uuid.uuid4()
+    print("gender------->", gender.value)
 
-    with sqlmodel_db_session() as session:
-        person = Person(
-            first_name=first_name,
-            last_name=last_name,
-            gender=gender,
-            email=email,
-            date_of_birth=date_of_birth,
-            country_of_birth=country_of_birth,
-            car_id=car_id,
-            id=id_,
-        )
-        session.add(person)
-        return {"id": id_}
+    # with sqlmodel_db_session() as session:
+    person = Person(
+        first_name=first_name,
+        last_name=last_name,
+        gender=gender.value,
+        email=email,
+        date_of_birth=date_of_birth,
+        country_of_birth=country_of_birth,
+        car_id=car_id,
+        id=id_,
+    )
+    session.add(person)
+    return {"id": str(id_)}
 
 
 def get_persons(session: Session):
 
     stmt = select(Person)
-    res = session.execute(stmt)
-    persons = res.fetchall()
+    res = session.exec(stmt)
+    persons = res.all()
+    print("persons----->", persons)
     if not persons:
         return []
 
     return [
         {
-            "name": f'{r[0].first_name + "  " + r[0].last_name}',
-            "id": str(r[0].id),
-            "email": r[0].email,
+            "name": f'{r.first_name + "  " + r.last_name}',
+            "id": str(r.id),
+            "email": r.email,
         }
         for r in persons
     ]
