@@ -53,7 +53,7 @@ def sqlmodel_db_session():
     session = None
     engine = create_db_engine(db_settings)
     try:
-        session = Session(bind=engine, expire_on_commit=False)
+        session = Session(bind=engine)
         yield session
 
     finally:
