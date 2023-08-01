@@ -2,5 +2,8 @@ venv
 .env
 .pytest_cache
 .idea
-*/__pycache__
-*.pyc
+#ignore the __pychace__ from all directories
+__pycache__/
+##ignore the .pyc files from all directories
+#*.pyc
+.gitignore

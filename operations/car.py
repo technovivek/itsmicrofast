@@ -3,7 +3,7 @@ import random
 from errors.database import AlreadyExistsInDBError
 from db.database import sqlmodel_db_session
 
-from sqlmodel import select, delete, Session, #or_, col
+from sqlmodel import select, delete, Session, or_, col
 
 from models import Book
 from models.car import Car
@@ -223,8 +223,9 @@ def delete_values_from_book():
         print("ghost  book", book.one())
 
 
-delete_values_from_book()
+# delete_values_from_book()
 
 #joining tables using sqlmodel
+
 
 
