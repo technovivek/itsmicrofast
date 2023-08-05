@@ -17,6 +17,7 @@ alembic = "^1.11.1"
 
 # poetry add pre-commit   --group dev
 httpx = "^0.24.1"
+azure-identity = "^1.13.0"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.272"
 pytest = "^7.3.2"

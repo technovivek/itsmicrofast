@@ -8,4 +8,4 @@ class Hero(SQLModel):
     name: str = Body()
     secret_name: str = Body()
     age: int = Body()
-    team_id: Optional[int] = Body()
+    team_id: Optional[int] = Body(default= None, description= "ID of the team the hero belongs to")

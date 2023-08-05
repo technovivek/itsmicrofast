@@ -10,11 +10,11 @@ from operations.book import get_book, add_book
 from operations.car import add_car_object, get_cars, \
     delete_car_object, get_a_car
 from operations.person import add_person, get_persons
-from schemas.team import Team
-from schemas.Heros import Hero
+from api_schemas.team import Team
+from api_schemas.Heros import Hero
 from operations.Heros import add_heros_to_db
-from schemas.car import SchemaCar, ListCars, CreateCarResponse, GetCar
-from schemas.person import CreatePersonResponse, ListPersons, \
+from api_schemas.car import SchemaCar, ListCars, CreateCarResponse, GetCar
+from api_schemas.person import CreatePersonResponse, ListPersons, \
     PersonRequest
 from db.database import get_session
 # from models.car import Car

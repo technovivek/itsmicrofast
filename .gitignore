@@ -5,5 +5,4 @@ venv
 #ignore the __pychace__ from all directories
 __pycache__/
 ##ignore the .pyc files from all directories
-#*.pyc
-.gitignore
+*.pyc

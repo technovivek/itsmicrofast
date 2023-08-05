@@ -94,12 +94,12 @@ def add_car_object(db: Session, make: str, model: str,
     try:
         # r = 1 / 0
         print("sunroof----->", sunroof)
-        res = db.execute(select(Car).where(Car.model == model))
-        print("Recess", [r for r in res])
-
-        if [r for r in res]:
-            raise AlreadyExistsInDBError(f"{model} already exists")
-        id = uuid.uuid4()  # noqa A003
+        # res = db.execute(select(Car).where(Car.model == model))
+        # print("Recess", [r for r in res])
+        #
+        # if [r for r in res]:
+        #     raise AlreadyExistsInDBError(f"{model} already exists")
+        # id = uuid.uuid4()  # noqa A003
         car = Car(make=make, model=model, price=price, id=id, sunroof=sunroof)
 
         db.add(car)
