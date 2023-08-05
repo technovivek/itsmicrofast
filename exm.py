@@ -26,10 +26,7 @@ import requests
 import requests
 # from azure.identity import DefaultAzureCredential
 from azure.identity import ClientSecretCredential
-AUTHORITY_URL = "https://login.microsoftonline.com/"
-PBI_TENANT_ID = "9652d7c2-1ccf-4940-8151-4a92bd474ed0"
-PBI_APP_ID = "daf5850e-9a49-4379-b0c9-44285ed32437"
-PBI_CLIENT_SECRET = "bL88Q~OpGXqXj.koUxNZj1p-QAAX5Oegkb3KEaaC~"
+
 
 PBI_API = "https://analysis.windows.net/powerbi/api/.default"
 def get_access_token() -> str:
