@@ -7,6 +7,7 @@ from sqlmodel import select, delete, Session, or_, col
 
 from models import Book
 from models.car import Car
+from uuid import uuid4
 
 car_models = [
     "Camry",
@@ -59,19 +60,21 @@ price_list = [random.choice([r for r in range(1000000, 9999999)]) for
 
 
 # print("price_list", price_list)
+sunroof = ["True", "False", "True", "False", "True", "False", "True", "False","True", "False", "True", "False", "True", "False", "True", "False",
+"False", "True", "False","True",]
 
 
 # for one time. for filling up db auto
-# def create_car_object():
-#
-#     with sqlmodel_db_session() as session:
-#         for i in range(20):
-#             car = Car(make = car_makes[i], model = car_models[i],
-#             price = price_list[i], id = uuid4())
-#             session.add(car)
-#         # print(f"{car1.make} added")
-#         return True
+def create_car_object():
 
+    with sqlmodel_db_session() as session:
+        for i in range(20):
+            car = Car(make = car_makes[i], model = car_models[i],
+            price = price_list[i], id = uuid4(), sunroof = sunroof[i])
+            session.add(car)
+        # print(f"{car1.make} added")
+        return True
+# create_car_object()
 # V1
 # def add_car_object(make: str, model: str, price: float) -> dict:
 #     id = uuid.uuid4()
@@ -206,7 +209,7 @@ def get_custom_values_from_car_update_only():
         stmt2 = select(Car).where(Car.sunroof == True)
         #sessin.add_all([obj1, obj2, obj3])
 
-get_custom_values_from_car_update_only()
+# get_custom_values_from_car_update_only()
 
 def delete_values_from_book():
 

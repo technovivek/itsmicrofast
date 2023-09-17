@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 from fastapi import Body
 
 
-class Team(SQLModel):
+class Team_(SQLModel):
     id: int = Body(description="Team ID")
-    name: str = Body()
-    headquarters: Optional[str] = Body()
+    name: str
+    headquarters: str | None = None

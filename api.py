@@ -10,15 +10,14 @@ from operations.book import get_book, add_book
 from operations.car import add_car_object, get_cars, \
     delete_car_object, get_a_car
 from operations.person import add_person, get_persons
-from api_schemas.team import Team
-from api_schemas.Heros import Hero
+from api_schemas.team import Team_
+from api_schemas.Heros import Hero_
 from operations.Heros import add_heros_to_db
+from operations.team import add_team
 from api_schemas.car import SchemaCar, ListCars, CreateCarResponse, GetCar
 from api_schemas.person import CreatePersonResponse, ListPersons, \
     PersonRequest
 from db.database import get_session
-# from models.car import Car
-# from models.person import Person
 from sqlalchemy.orm import Session
 from enum import Enum
 
@@ -104,16 +103,17 @@ def get_books(session: Session = Depends(get_session)):
 
 
 @app.post("/team", tags=[Tags.team.value])
-def create_team(team: Team, session=Depends(get_session)):
+def create_team(team: Team_, session=Depends(get_session)):
     pass
 
 
 @app.post("/hero", tags=[Tags.hero.value])
-def create_hero(hero: Hero, session=Depends(get_session)):
+def create_hero(hero: Hero_, session=Depends(get_session)):
     return add_heros_to_db(session, **hero.__dict__)
-# @app.post("/hero", tags=[Tags.hero.value])
-# def create_hero(hero: Hero, session=Depends(get_session)):
-#     pass
-#
+
+@app.post("/team", tags= [Tags.team.value])
+def create_team(team: Team_, session = Depends(get_session)):
+    add_team(db = session, **team.__dict__)
+
 # if __name__ == "__main__":
 #     uvicorn.run(app, host="0.0.0.0", port=8002)

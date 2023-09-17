@@ -2,7 +2,7 @@ from sqlmodel import Field, String, Column, SQLModel
 from typing import Optional
 
 
-class Heros(SQLModel, table=True):
+class Heros_(SQLModel, table=True):
     id: Optional[int] = Field(sa_column=Column(name="id", type_=int,
                                                primary_key=True, autoincrement=True,
                                                nullable=False))  # Field(primary_key= True, nullable= False)

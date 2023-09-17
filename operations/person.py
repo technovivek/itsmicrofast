@@ -2,6 +2,7 @@ from db.database import sqlmodel_db_session
 from models.person import Person
 import uuid
 from sqlmodel import select, Session
+import  random
 
 # from sqlalchemy.exc import IntegrityError
 
@@ -90,17 +91,17 @@ countries = [
 ]
 
 
-# gender = ("Male","Female","Trans")
-# gender_list = []
-# for _ in range(20):
-#     g = random.choice(gender)
-#     gender_list.append(g)
-#
-# uuid_list = []
-# for _ in range(20):
-#
-#     uuid_list.append(uuid.uuid4())
-#
+gender = ("Male","Female","Trans")
+gender_list = []
+for _ in range(20):
+    g = random.choice(gender)
+    gender_list.append(g)
+
+uuid_list = []
+for _ in range(20):
+
+    uuid_list.append(uuid.uuid4())
+
 
 
 # main_list =
