@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "mfast"
+version = "0.1.0"
+description = "table relations and more"
+authors = ["VIVEK KUMAR <vivek.v.kumar@mercedes-benz.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "1.4.40"
+sqlmodel = "^0.0.8"
+alembic = "^1.12.0"
+fastapi = "^0.103.1"
+psycopg2 = "^2.9.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

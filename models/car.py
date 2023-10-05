@@ -1,6 +1,7 @@
 from sqlalchemy import String, Column, Numeric, Boolean
 from sqlmodel import Field, SQLModel
 import uuid
+from typing import Optional
 
 
 # class Car(Base):
@@ -39,7 +40,7 @@ class Car(SQLModel, table=True):
         index=True,
     )
     price: int = Field(sa_column=Column(name="price", type_=Numeric))
-    sunroof: bool = Field(sa_column=Column(name="is_sunroof", type_=Boolean))
+    sunroof: Optional[bool] = Field(sa_column=Column(name="is_sunroof", type_=Boolean, default= False))
 
     # def __repr__(self):
     #      return f"Car {Car.make}  model {Car.model} id {Car.id} price {Car.price}"

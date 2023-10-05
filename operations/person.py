@@ -1,8 +1,9 @@
-
 from db.database import sqlmodel_db_session
 from models.person import Person
 import uuid
 from sqlmodel import select, Session
+import  random
+
 # from sqlalchemy.exc import IntegrityError
 
 first_names = [
@@ -90,17 +91,17 @@ countries = [
 ]
 
 
-# gender = ("Male","Female","Trans")
-# gender_list = []
-# for _ in range(20):
-#     g = random.choice(gender)
-#     gender_list.append(g)
-#
-# uuid_list = []
-# for _ in range(20):
-#
-#     uuid_list.append(uuid.uuid4())
-#
+gender = ("Male","Female","Trans")
+gender_list = []
+for _ in range(20):
+    g = random.choice(gender)
+    gender_list.append(g)
+
+uuid_list = []
+for _ in range(20):
+
+    uuid_list.append(uuid.uuid4())
+
 
 
 # main_list =
@@ -108,58 +109,44 @@ countries = [
 # email_list, first_names, last_names]
 
 
-def add_person(
-    first_name, last_name, gender, email, date_of_birth,
+def add_person(session,
+        first_name, last_name, gender, email, date_of_birth,
         country_of_birth, car_id
 ) -> dict:
-    try:
+    id_ = uuid.uuid4()
+    print("gender------->", gender.value)
 
-        id_ = uuid.uuid4()
-
-        with sqlmodel_db_session() as session:
-            # for i in range(20):
-            #     person = Person(id = uuid_list[i], first_name =
-            #     first_names[i],
-            #                     last_name = last_names[i],
-            #                     country_of_birth = countries[i],
-            #                     gender = gender_list[i], email =
-            #                     email_list[i], date_of_birth =
-            #                     date_of_birth_list[i])
-            #
-            #     session.add(person)
-            person = Person(
-                first_name=first_name,
-                last_name=last_name,
-                gender=gender,
-                email=email,
-                date_of_birth=date_of_birth,
-                country_of_birth=country_of_birth,
-                car_id=car_id,
-                id=id_,
-            )
-            session.add(person)
-            return {"id": id_}
-    except Exception as i:
-        print("Failed to add to DB", i)
-        raise
+    # with sqlmodel_db_session() as session:
+    person = Person(
+        first_name=first_name,
+        last_name=last_name,
+        gender=gender.value,
+        email=email,
+        date_of_birth=date_of_birth,
+        country_of_birth=country_of_birth,
+        car_id=car_id,
+        id=id_,
+    )
+    session.add(person)
+    return {"id": str(id_)}
 
 
 def get_persons(session: Session):
 
     stmt = select(Person)
-    res = session.execute(stmt)
-    persons = res.fetchall()
+    res = session.exec(stmt)
+    persons = res.all()
+    print("persons----->", persons)
     if not persons:
         return []
 
     return [
         {
-            "name": f'{r[0].first_name + "  " + r[0].last_name}',
-            "id": str(r[0].id),
-            "email": r[0].email,
+            "name": f'{r.first_name + "  " + r.last_name}',
+            "id": str(r.id),
+            "email": r.email,
         }
         for r in persons
     ]
 
 
-# print(get_persons())

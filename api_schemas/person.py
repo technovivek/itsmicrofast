@@ -22,10 +22,10 @@ class PersonRequest(Base):
     last_name: Annotated[str, Body(max_length=50)]
     gender: Annotated[Gender, Body()] = Gender.OTHERS.value
     email: Annotated[str, Body()]
-    date_of_birth: Annotated[datetime, Body()]
+    date_of_birth: Annotated[str, Body(regex= r"\d{4}-\d{2}-\d{2}", description="YYYY-MM-DD")]
     country_of_birth: Annotated[str, Body()]
-    car_id: Annotated[uuid.UUID, Body()] = None
-    id: Annotated[uuid.UUID, Body()]
+    car_id: Annotated[Optional[uuid.UUID| str], Body()] = None
+    # id: Annotated[uuid.UUID, Body()]
 
 
 class CreatePersonResponse(Base):
